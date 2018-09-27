@@ -173,6 +173,7 @@ use employees
 db.createCollection('emps')
 
 // add a three documents with varying complexity to the collection.
+// the second document has a nested document inside of it named 'previouspositions'
 db.emps.insert([{
     fname: 'john',
     lname: 'doe',
@@ -225,3 +226,10 @@ db.emps.find({salary:{{$lte: 150000}}}).pretty()
 
 // where a two 'keys' are eqaul to two 'values' (and)
 db.emps.find({$and:[{role:'manager'}, {previouspositions:null}]}).pretty()
+
+// other operators include or {$or: []} not equal {$ne: } less than {$lt: }
+
+________________________________________________________________________________
+
+/*
+Exercise 7: 
