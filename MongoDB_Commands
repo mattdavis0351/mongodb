@@ -96,4 +96,6 @@ db.getCollection("mycollection").find().pretty()
 /*
   g) Using Robo 3T verify that all collections and documents have been added
       successfully.
+  h) From the Mongo shell, you can use 'show collections' to view a list of
+      collections that are availble in the database.
 */
