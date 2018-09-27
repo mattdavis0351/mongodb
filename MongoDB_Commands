@@ -27,6 +27,8 @@ use cricketData
 // Show all available databases and verify they were created in Robo 3T
 show dbs
 
+________________________________________________________________________________
+
 /*
 Exercise 2:
   a) Using Robo 3T, right-click on the connection name and select new database.
@@ -40,6 +42,8 @@ Exercise 2:
       the next exercise. (This is true for ALL databases with Mongo, not just
       those made using Robo 3T)
 */
+
+________________________________________________________________________________
 
 /*
 Exercise 3:
@@ -99,3 +103,125 @@ db.getCollection("mycollection").find().pretty()
   h) From the Mongo shell, you can use 'show collections' to view a list of
       collections that are availble in the database.
 */
+
+________________________________________________________________________________
+
+/*
+Exercise 4:
+  a) Databases can also be dropped once they have been created.  The following
+      two methods describe how to drop a database.
+  b) In Robo 3T, right-click on the DB name and select 'drop database'.
+  c) From the mongo shell use the following to perform a drop.  The drop
+      affects the databse that you are currently working in.
+*/
+
+// switch to the database you wish to drop
+use myRemaingGUIDatabse
+
+// drop the database
+db.dropDatabase()
+
+// verify the databse has been dropped
+show dbs
+
+________________________________________________________________________________
+
+/*
+Exercise 5:
+  a) Dropping collections is very similar.  The following steps are designed to
+      work from the Mongo shell, although all actions can be performed in
+      Robo 3T.
+*/
+
+// create a new databse named myDb
+use myDb
+
+// create a collection and load a document into it.
+db.createCollection('col1')
+db.col1.insertOnce({x: 1, y: true, stuff: 40, morestuff: 'strings and stuff'})
+
+// verify collection exists
+show collections
+
+// notice how this time we didn't use getCollection(), both do the same job.
+db.col1.find()
+db.col1.find().pretty()
+
+// drop the collection named col1
+db.col1.drop()
+
+// verify only the collection was dropped, and not the entire database
+show collections
+show dbs
+
+// remove the current database
+db.dropDatabase()
+
+________________________________________________________________________________
+
+/*
+Exercise 6:
+  a) We can also query documents in a more specific manner than just using find().
+  b) Follow along to create a new database, add collections, load multiple
+      documents at once, and then query those documents in a more complex manner.
+*/
+
+// create a new database
+use employees
+
+// add an employees collection
+db.createCollection('emps')
+
+// add a three documents with varying complexity to the collection.
+db.emps.insert([{
+    fname: 'john',
+    lname: 'doe',
+    groups: ['brokers', 'bonds', 'stocks', 'mutal funds'],
+    salary: 75000,
+    role: 'broker',
+    previouspositions: null
+  },
+  {
+    fname: 'jane',
+    lname: 'doe',
+    groups: ['managers', 'IT', 'operations'],
+    role: 'manager',
+    salary: 173000,
+    previouspositions: [
+      {
+        previousrole: "IT operations",
+        previoussalary: 90000
+      },
+      {
+        previousrole: "IT help desk",
+        previoussalary: 65000
+      }
+    ]
+  },
+  {
+    fname: 'john',
+    lname: 'smith',
+    groups: ["managers", 'brokers', 'operations'],
+    role: 'manager',
+    salary: 150000,
+    previouspositions: null
+}])
+
+// Query the docuemnt for specific items
+db.emps.find().pretty()
+
+// where a 'key' is equal to a 'value'
+db.emps.find({role:"manager"}).pretty()
+db.emps.find({lname:'doe'}).pretty()
+
+// where a 'key' is greater than a 'value'
+db.emps.find({salary:{$gt:150000}}).pretty()
+
+// where a 'key' is greater than or equal to a 'value'
+db.emps.find({salary:{$gte:150000}}).pretty()
+
+// where a 'key' is less than or equal to a 'value'
+db.emps.find({salary:{{$lte: 150000}}}).pretty()
+
+// where a two 'keys' are eqaul to two 'values' (and)
+db.emps.find({$and:[{role:'manager'}, {previouspositions:null}]}).pretty()
