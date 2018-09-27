@@ -1,0 +1,99 @@
+/*
+Exercise 1:
+  a) Start the mongod service so that you have a running database .
+  b) Open Robo 3T so that we can better visualize what is happening.
+  c) Connect to your DB, just accept the defaults and set whatever connection
+      name you would like your connection to have, this name does not impact
+      the database.
+  d) Open a new mongo shell from the command prompt and run the following
+      commands to get familiar with MongoDB.
+  e) Examine Robo 3T along the way to better visualize what is happening.
+*/
+
+// Show all available databases
+show dbs
+
+// Verify what DB you are currently using (shoudl be 'test', this is the default)
+// this database will also NOT show up in Robo 3T
+db
+
+// Use a different database, will create a new DB on execution if one does
+// not already exist.
+use ourFirstDB
+use ourSecondDB
+use stockData
+use cricketData
+
+// Show all available databases and verify they were created in Robo 3T
+show dbs
+
+/*
+Exercise 2:
+  a) Using Robo 3T, right-click on the connection name and select new database.
+  b) Create two databases using this GUI method.
+  c) Name these databases anything you'd like, and then verify their existence
+      using the mongo shell (associates should be able to complete this without
+      being instructor led, if they need help the command is 'show dbs').
+  d) You should notice that through the Mongo shell there will be no recollection
+      that these new databases have been created.  For them to show up in the
+      shell, a collection must firt be made inside of them.  We will do this in
+      the next exercise. (This is true for ALL databases with Mongo, not just
+      those made using Robo 3T)
+*/
+
+/*
+Exercise 3:
+  a) Using Robo 3T, expand one of the GUI created databases and right-click on
+      the 'collections' folder.
+  b) From the drop down menu that appears, select 'create collection'.  Name
+      this collection anything you want.
+  c) Right-click this new collection and select 'insert document'.  A window
+      will pop up, write the following JSON in this window: */
+      {
+        fname: 'john',
+        lname: 'doe',
+        salary: 70000,
+        departments: ['sales', 'admins'],
+        hiredate: '2018-08-29'
+      }
+
+/*    use the 'validate' button to ensure it is formatted properly. Once
+      properly formatted, click 'save'.
+  d) Using the mongo shell use the following commands to view this collection.
+*/
+
+// Change to the proper database
+use myGUIDbName
+
+// View the recently created collection
+db.getCollection("whateverYourCollectionNameIs")
+
+// View the contents of that collection
+db.getCollection("whateverYourCollectionNameIs").find()
+
+// A more structured output of the contents of that collection
+db.getCollection("whateverYourCollectionNameIs").find().pretty()
+
+/*
+  e) From the Mongo shell switch to the other GUI created db by using the 'use'
+      command.
+  f) We will now create a collection in this database using the mongo shell.
+      use the following commands to accomplish this task:
+*/
+
+use mySecongGUIDbName
+
+// create a new collection in this database.
+db.createCollection('mycollection')
+
+// add a document to this new collection.
+db.mycollection.insert({fname: "Jane", lname: 'Doe', salary: 90000,
+departments: ['admin', 'IT', 'Data Engineers'], hiredate: '2018-08-29'})
+
+// ensure the document was successfully placed into the collection.
+db.getCollection("mycollection").find().pretty()
+
+/*
+  g) Using Robo 3T verify that all collections and documents have been added
+      successfully.
+*/
