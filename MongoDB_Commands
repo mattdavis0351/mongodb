@@ -388,7 +388,7 @@ Use what you have learned to migrate this data into Mongo using the design you
 created above.  Be prepared to discuss why you chose your design and demonstrate
 that your data was properly imported.
 
-Create 3 queriers per database that will show some things that your group finds
+Create 5 queriers per database that will show some things that your group finds
 interesting about the data.  No... seriously... whatever you find interesting,
 write queries and show us.  Be prepared to talk about why you found it interesting
 and how your query relates to that interest.
