@@ -1,0 +1,30 @@
+{
+  "empno": 1,
+  "fname": "john",
+  "lname": "doe",
+  "role": "manager"
+}
+{
+  "empno": 2,
+  "fname": "john",
+  "lname": "smith",
+  "role": "team lead"
+}
+{
+  "empno": 3,
+  "fname": "jane",
+  "lname": "smith",
+  "role": "team lead"
+}
+{
+  "empno": 4,
+  "fname": "jane",
+  "lname": "doe",
+  "role": "team lead"
+}
+{
+  "empno": 5,
+  "fname": "ben",
+  "lname": "bradley",
+  "role": "manager"
+}

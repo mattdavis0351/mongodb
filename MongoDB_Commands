@@ -229,7 +229,169 @@ db.emps.find({$and:[{role:'manager'}, {previouspositions:null}]}).pretty()
 
 // other operators include or {$or: []} not equal {$ne: } less than {$lt: }
 
+// filtering by a specific value is also possible
+db.emps.find({},{_id:0, "fname":1, "lname":1}).pretty()
+
+// limit the number of documents returned by adding limit()
+db.emps.find().limit(2).pretty()
+
+// combine limit() and skip() to filter queries
+db.emps.find().limit(2).skip(1).pretty()
+
+// sort results in ascending order by using sort() with 1 as an argument
+db.mycol.find({},{"lname":1}).sort({"lname":1})
+
+// sort results in descending order by using sort() with -1
+db.mycol.find({},{"lname":1}).sort({"lname":-1})
+
 ________________________________________________________________________________
 
 /*
-Exercise 7: 
+Exercise 7:
+  a) Updating documents once they are added to a collection is also possible
+  b) Updating takes place in two ways, either ammending an existing docuemnt,
+      or by completely overwriting the docuemnt.
+  c)  Use the Mongo shell to accomplish the following.
+*/
+
+// update a field in an existing docuement
+// change the FIRST occurance of "role":"broker" to "role":"sales"
+db.emps.update({"role":"broker"}, {$set:{"role":"sales"}})
+db.emps.find().pretty()
+
+// what if there are multiple documents that share the same field information
+// let's try to run the following update.  There are two docuemnts that This
+// update could apply to, let's see which is affected.
+db.emps.update({"role":"manager"}, {$set:{"role":"leader"}})
+db.emps.find().pretty()
+
+// change multiple docuemnts in a colleciton by adding multi:true
+db.emps.update({"previouspositions":null},{$set:{"previouspositions":"empty"}}, {multi:true})
+db.emps.find().pretty()
+
+// completely overwrite a specific document in a collection
+db.emps.save({"_id":ObjectId("your_hex_id"), "fname":"Clark", "lname":"Kent"})
+db.emps.find().pretty()
+
+________________________________________________________________________________
+
+/*
+Exercise 8:
+  a) Data can also be imported from external files.
+  b) Exit the mongo shell, or open another command prompt and nagivate to the
+      directory that contains the .json and .csv data files.
+  c) Use the Mongo import command to load these files into Mongo.
+  d) You can check to see this visually in Robo 3T.
+*/
+
+// load people.json into an EXISTING database, while creating a new Collection
+mongoimport -d myExistingDatabase -c myNewCollectionName --file people.json
+
+// verify the data has been imported properly
+use myExistingDatabase
+show collections
+db.myNewCollectionName.find().pretty()
+
+// load people.json into a NEW database and create a collection at the same time
+mongoimport -d myNewDatabase -c myNewCollectionName --file people.json
+
+// verify the data has been imoorted properly
+use myNewDatabase
+show collections
+db.myNewCollectionName.find().pretty()
+
+// import a .csv into a new database and new collection
+mongoimport -d cricketplayers -c players --type csv --headerline --file player.csv
+use cricketplayers
+show collections
+db.players.find.pretty()
+
+// We have a lot of data in multiple databases now, using count() we can see
+// just how many documents per collection we have.
+// using the Mongo shell lets count cricket players
+use cricketplayers
+db.players.count()
+
+________________________________________________________________________________
+
+/*
+Exercise 9:
+  a) Removing documents from a collection.
+  b) use the database that was created in the previous exercise by importing
+      the people.json file.
+  c) Removing documents from a collection happens in two ways.
+    1) All docuemnts that match the criteria are removed.
+    2) Only one docuemtn that matches the criteria is removed.
+  d) We will look at both, from the mongo shell use the following.
+*/
+
+// use the proper database and view the documents in the collection
+use myDbContainingPeople
+show collections
+db.collectionname.find().pretty()
+
+// let's delete all the managers
+db.collectionname.remove({"role":"manager"})
+db.collectionname.find().pretty()
+
+// by adding a parameter we can delete just one document in a collection, even
+// if more than once document matches the criteria.
+db.collectionname.remove({"role":"team lead"},1)
+db.collectionname.find().pretty()
+
+// be careful when using remove.  if no criteria is specified then Mongo deletes
+// everything in the collection
+db.collectionname.remove()
+db.collectionname.find().pretty()
+
+________________________________________________________________________________
+/*
+Exercise 10:
+  a) Using the Mongo shell we are going to take a look at aggregate functions.
+  b) use the cricketplayers database for the following exercises.
+*/
+
+// count players by batting hand
+db.players.aggregate([{$group : {_id : "$Batting_Hand", player_count : {$sum: 1}}}])
+
+// count players by batting hand with no null values
+db.players.aggregate([{$match: {Batting_Hand:{$ne: null}}},{$group : {_id : "$Batting_Hand", Number_per : {$sum: 1}}}])
+
+// count number of players per country
+db.players.aggregate([{$group : {_id : "$Country", Number_per : {$sum: 1}}}])
+
+// count number of players per country with no null values
+db.players.aggregate([{$match: {Country:{$ne: null}}},{$group : {_id : "$Country", Number_per : {$sum: 1}}}])
+
+// count number of player of each country that bat with a given hand.
+db.players.aggregate([{$group:{_id:{"Country":"$Country", "Batting_Hand":"$Batting_Hand"}, numberper:{$sum:1}}}])
+
+// count number of players of each country that bar with a given hand and sort alphabetically by country
+db.players.aggregate([{$group:{_id:{"Country":"$Country", "Batting_Hand":"$Batting_Hand"}, numberper:{$sum:1}}}, {$sort:{_id:1}}])
+
+// count number of players of each country that bar with a given hand and sort alphabetically
+// by country and remove null values
+db.players.aggregate([{
+  $match:{Batting_Hand:{$ne:"NULL"}}},
+  {$group:{_id:{"Country":"$Country", "Batting_Hand":"$Batting_Hand"}, numberper:{$sum:1}}},
+  {$sort:{_id:1}}])
+________________________________________________________________________________
+
+/*
+Mini Project 1:
+
+Inside the 'datasets' folder you will find multiple sets of data, in multiple
+formats.  Look through this data and design database names and collection names
+that will make sense for datasets.
+
+Use what you have learned to migrate this data into Mongo using the design you
+created above.  Be prepared to discuss why you chose your design and demonstrate
+that your data was properly imported.
+
+Create 3 queriers per database that will show some things that your group finds
+interesting about the data.  No... seriously... whatever you find interesting,
+write queries and show us.  Be prepared to talk about why you found it interesting
+and how your query relates to that interest.
+*/
+
+________________________________________________________________________________
