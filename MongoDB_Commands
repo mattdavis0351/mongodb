@@ -355,13 +355,13 @@ Exercise 10:
 db.players.aggregate([{$group : {_id : "$Batting_Hand", player_count : {$sum: 1}}}])
 
 // count players by batting hand with no null values
-db.players.aggregate([{$match: {Batting_Hand:{$ne: null}}},{$group : {_id : "$Batting_Hand", Number_per : {$sum: 1}}}])
+db.players.aggregate([{$match: {Batting_Hand:{$ne: "NULL"}}},{$group : {_id : "$Batting_Hand", Number_per : {$sum: 1}}}])
 
 // count number of players per country
 db.players.aggregate([{$group : {_id : "$Country", Number_per : {$sum: 1}}}])
 
 // count number of players per country with no null values
-db.players.aggregate([{$match: {Country:{$ne: null}}},{$group : {_id : "$Country", Number_per : {$sum: 1}}}])
+db.players.aggregate([{$match: {Country:{$ne: "NULL"}}},{$group : {_id : "$Country", Number_per : {$sum: 1}}}])
 
 // count number of player of each country that bat with a given hand.
 db.players.aggregate([{$group:{_id:{"Country":"$Country", "Batting_Hand":"$Batting_Hand"}, numberper:{$sum:1}}}])
